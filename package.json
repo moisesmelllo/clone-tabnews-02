@@ -4,16 +4,17 @@
   "description": "Refazendo o projeto a fim de absorver ainda mais os conhecimentos",
   "main": "index.js",
   "scripts": {
-    "dev": "next dev",
+    "dev": "docker compose -f infra/compose.yaml up -d && (trap 'docker compose -f infra/compose.yaml down' EXIT; next dev)",
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watchAll"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
     "next": "^13.1.6",
+    "pg": "^8.11.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
