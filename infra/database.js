@@ -7,7 +7,7 @@ async function query(queryObject) {
     user: process.env.POSTGRES_USER,
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
-    ssl: require,
+    ssl: process.env.NODE_ENV === "production" ? true : true,
   });
 
   try {
@@ -18,7 +18,7 @@ async function query(queryObject) {
     console.error("Erro na query do banco:", error);
     throw error;
   } finally {
-    await client.end();
+    //await client.end();
   }
 }
 
