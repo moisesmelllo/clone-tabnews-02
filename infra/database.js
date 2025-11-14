@@ -9,10 +9,16 @@ async function query(queryObject) {
     password: process.env.POSTGRES_PASSWORD,
   });
 
-  await client.connect();
-
-  const response = await client.query(queryObject);
-  return response;
+  try {
+    await client.connect();
+    const response = await client.query(queryObject);
+    return response;
+  } catch (error) {
+    console.error("Erro na query do banco:", error);
+    throw error;
+  } finally {
+    await client.end();
+  }
 }
 
 export default {
