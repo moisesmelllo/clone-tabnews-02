@@ -11,7 +11,9 @@
     "lint:check": "prettier --check .",
     "lint:fix": "prettier --write .",
     "test": "jest",
-    "test:watch": "jest --watchAll"
+    "test:watch": "jest --watchAll",
+    "build": "next build",
+    "start": "next start"
   },
   "author": "",
   "license": "MIT",
