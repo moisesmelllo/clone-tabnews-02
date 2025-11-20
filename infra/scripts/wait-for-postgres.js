@@ -8,7 +8,7 @@ function checkForPostgres() {
 
   function callBackFunction(stderr, stdout) {
     if (stdout.includes("accepting connections")) {
-      console.log("\n\n🟢 Banco esta pronto para receber conexoes");
+      console.log("\n\n🟢 Banco esta pronto para receber conexôes");
       return true;
     }
     process.stdout.write(".");
@@ -16,5 +16,7 @@ function checkForPostgres() {
   }
 }
 
-process.stdout.write("\n\n🔴 Aguardando conexoes ao banco");
+process.stdout.write(
+  "\n\n🔴 Aguardando banco estar pronto para receber conexôes",
+);
 checkForPostgres();
