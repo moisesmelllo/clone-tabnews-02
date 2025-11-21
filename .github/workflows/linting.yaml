@@ -14,9 +14,16 @@ jobs:
           node-version: "lts/hydrogen"
 
       - run: npm ci
-
-      - name: Check Prettier
       - run: npm run lint:prettier:check
+  ESLint:
+    name: ESLint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
 
-      - name: Run ESLint
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "lts/hydrogen"
+
+      - run: npm ci
       - run: npx eslint . --ext .js,.jsx,.ts,.tsx
