@@ -15,4 +15,8 @@ jobs:
 
       - run: npm ci
 
+      - name: Check Prettier
       - run: npm run lint:prettier:check
+
+      - name: Run ESLint
+      - run: npx eslint . --ext .js,.jsx,.ts,.tsx
