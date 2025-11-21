@@ -22,4 +22,4 @@ jobs:
 
       # Step 2: Check code quality
       - name: Run ESLint
-        run: npx eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0
+        run: npm run lint:eslint:check
