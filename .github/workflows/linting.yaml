@@ -3,8 +3,8 @@ name: Linting
 on: pull_request
 
 jobs:
-  prettier:
-    name: Prettier
+  lint:
+    name: Linting Checks
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -12,18 +12,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "lts/hydrogen"
+          cache: "npm" # Speeds up the install
 
       - run: npm ci
-      - run: npm run lint:prettier:check
-  ESLint:
-    name: ESLint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "lts/hydrogen"
+      # Step 1: Check formatting
+      - name: Check Prettier
+        run: npm run lint:prettier:check
 
-      - run: npm ci
-      - run: npx eslint . --ext .js,.jsx,.ts,.tsx
+      # Step 2: Check code quality
+      - name: Run ESLint
+        run: npx eslint . --ext .js,.jsx,.ts,.tsx --max-warnings=0
