@@ -1,0 +1,2 @@
+# Roda o verificador de senhas em todos os arquivos
+npx secretlint "**/*"
