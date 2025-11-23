@@ -11,7 +11,7 @@
     "lint:prettier:check": "prettier --check .",
     "lint:prettier:fix": "prettier --write .",
     "lint:eslint:check": "eslint . --max-warnings=0",
-    "test": "npm run services:up && concurrently --kill-others --success command-jest -n next,jest --hide next \"next dev\" \"jest --runInBand\"",
+    "test": "npm run services:up && npm run wait-for-postgres && npm run migration:up && concurrently --kill-others --success command-jest -n next,jest \"next dev\" \"jest --runInBand\"",
     "test:watch": "jest --runInBand --watchAll",
     "build": "next build",
     "start": "next start",
