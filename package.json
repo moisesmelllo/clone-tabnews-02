@@ -4,7 +4,8 @@
   "description": "Refazendo o projeto a fim de absorver ainda mais os conhecimentos",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run services:up && npm run services:wait:database && npm run migrations:up && next dev",
+    "dev": "npm run services:up && npm run services:wait:database && npm run migrations:up && node infra/dev-runner.js",
+    "postdev": "npm run services:stop",
     "test": "npm run services:up && concurrently --kill-others --success command-jest -n next,jest \"next dev\" \"jest --runInBand\"",
     "test:watch": "jest --runInBand --watchAll",
     "services:up": "docker compose -f infra/compose.yaml up -d",
