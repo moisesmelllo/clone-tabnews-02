@@ -11,7 +11,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "lts/hydrogen"
+          node-version: "20.9.0"
           cache: "npm" # Speeds up the install
 
       - run: npm ci
@@ -33,7 +33,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "lts/hydrogen"
+          node-version: "20.9.0"
           cache: "npm" # Speeds up the install
 
       - run: npm ci
