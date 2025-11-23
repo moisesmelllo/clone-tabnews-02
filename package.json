@@ -4,7 +4,7 @@
   "description": "Refazendo o projeto a fim de absorver ainda mais os conhecimentos",
   "main": "index.js",
   "scripts": {
-    "dev": "npm run services:up && npm run services:wait:database && npm run migrations:up && node infra/dev-runner.js",
+    "dev": "npm run services:up && npm run services:wait:database && npm run migrations:up && (trap 'npm run services:stop' INT TERM HUP; next dev)",
     "test": "npm run services:up && concurrently --kill-others --success command-jest -n next,jest \"next dev\" \"jest --runInBand\"",
     "posttest": "npm run services:stop",
     "test:watch": "jest --runInBand --watchAll",
