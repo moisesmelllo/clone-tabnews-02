@@ -1,6 +1,7 @@
 import database from "infra/database";
 import { runner as migrationRunner } from "node-pg-migrate";
 import { join } from "node:path";
+import { ServiceError } from "infra/errors";
 
 const defaultMigrationOptions = {
   dir: join("infra", "migrations"),
@@ -21,6 +22,12 @@ async function runMigrations({ dryRun }) {
     });
 
     return PendingMigrations;
+  } catch (error) {
+    const databaseError = new ServiceError({
+      cause: error,
+      message: "Erro ao rodar as migrations no banco de dados",
+    });
+    throw databaseError;
   } finally {
     if (dbClient) {
       await dbClient?.end();
