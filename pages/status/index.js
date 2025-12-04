@@ -2,7 +2,7 @@ import useSWR from "swr";
 
 async function fetchAPI(key) {
   const response = await fetch(key);
-  const responseBody = await response.json(); // Adicionado await aqui
+  const responseBody = await response.json();
   return responseBody;
 }
 
