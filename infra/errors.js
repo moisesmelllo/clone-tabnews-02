@@ -47,4 +47,33 @@ export class ServiceError extends Error {
     this.action = "Verifique se o serviço está disponível";
     this.statusCode = 503;
   }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    };
+  }
+}
+
+export class ValidationError extends Error {
+  constructor({ cause, message, action }) {
+    super(message || "Requisição invalida", {
+      cause,
+    });
+    this.name = "ValidationError";
+    this.action = action || "Utilize outro email para realizar o cadastro";
+    this.statusCode = 400;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    };
+  }
 }
