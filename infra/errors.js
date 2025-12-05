@@ -64,8 +64,26 @@ export class ValidationError extends Error {
       cause,
     });
     this.name = "ValidationError";
-    this.action = action || "Utilize outro email para realizar o cadastro";
+    this.action = action || "Verifique os campos digitados e tente novamente";
     this.statusCode = 400;
+  }
+
+  toJSON() {
+    return {
+      name: this.name,
+      message: this.message,
+      action: this.action,
+      status_code: this.statusCode,
+    };
+  }
+}
+
+export class NotFoundError extends Error {
+  constructor({ action, message }) {
+    super(message || "Valor não encontrado");
+    this.name = "NotFoundError";
+    this.action = action || "O valor informado nao foi encontrado";
+    this.statusCode = 404;
   }
 
   toJSON() {
