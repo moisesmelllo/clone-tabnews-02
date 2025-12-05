@@ -1,12 +1,12 @@
 import database from "infra/database";
-import { runner as migrationRunner } from "node-pg-migrate";
+import migrationRunner from "node-pg-migrate";
 import { join } from "node:path";
 import { ServiceError } from "infra/errors";
 
 const defaultMigrationOptions = {
   dir: join("infra", "migrations"),
   direction: "up",
-  verbose: true,
+  log: () => {},
   migrationsTable: "pgmigrations",
 };
 
