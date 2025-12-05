@@ -1,5 +1,5 @@
 import database from "infra/database";
-import { ValidationError } from "infra/errors";
+import { ValidationError, NotFoundError } from "infra/errors";
 
 async function create(userInputValues) {
   let { username, email, password } = userInputValues;
@@ -30,6 +30,31 @@ async function create(userInputValues) {
   }
 }
 
+async function findOneByUsername(username) {
+  const response = await database.query({
+    text: `
+      SELECT
+        *
+      FROM
+        users
+      WHERE
+        LOWER(username) = LOWER($1)
+      LIMIT
+        1
+    ;`,
+    values: [username],
+  });
+
+  if (response.rowCount === 0) {
+    throw new NotFoundError({
+      action: "Verifique o nome digitado e tente novamente",
+      message: "Usuario não localizado no sistema",
+    });
+  }
+
+  return response.rows[0];
+}
+
 async function runInsertQuery(username, email, password) {
   const result = await database.query({
     text: `
@@ -50,6 +75,7 @@ async function runInsertQuery(username, email, password) {
 
 const user = {
   create,
+  findOneByUsername,
 };
 
 export default user;
