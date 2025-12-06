@@ -1,4 +1,11 @@
+import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
+
+beforeAll(async () => {
+  await orchestrator.waitForAllServices();
+  await orchestrator.clearDatabase();
+  await orchestrator.runPendingMigrations();
+});
 
 describe("GET /api/v1/users/[username]", () => {
   describe("Anonymous user", () => {
