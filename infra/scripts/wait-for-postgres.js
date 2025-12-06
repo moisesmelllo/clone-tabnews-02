@@ -8,6 +8,7 @@ function checkForPostgres() {
 
   function callBackFunction(stderr, stdout) {
     if (stdout.includes("accepting connections")) {
+      // eslint-disable-next-line no-console
       console.log("\n\n🟢 Banco esta pronto para receber conexôes");
       return true;
     }

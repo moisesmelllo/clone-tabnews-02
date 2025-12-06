@@ -21,8 +21,6 @@ function onErrorHandler(error, request, response) {
     cause: error,
   });
 
-  console.error(publicErrorObject);
-
   return response.status(publicErrorObject.statusCode).json(publicErrorObject);
 }
 
