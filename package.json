@@ -31,14 +31,14 @@
     "next": "^16.0.7",
     "next-connect": "^1.0.0",
     "pg": "8.16.3",
-    "react": "19.2.0",
-    "react-dom": "19.2.0",
-    "swr": "2.2.5",
-    "uuid": "11.1.0"
+    "react": "19.2.1",
+    "react-dom": "19.2.1",
+    "swr": "2.3.7",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "20.1.0",
-    "@commitlint/config-conventional": "20.0.0",
+    "@commitlint/cli": "20.2.0",
+    "@commitlint/config-conventional": "20.2.0",
     "@secretlint/secretlint-rule-preset-recommend": "11.2.5",
     "commitizen": "4.3.1",
     "concurrently": "9.2.1",
@@ -51,7 +51,7 @@
     "husky": "9.1.7",
     "jest": "30.2.0",
     "node-pg-migrate": "^6.2.2",
-    "prettier": "3.6.2",
+    "prettier": "3.7.4",
     "secretlint": "11.2.5"
   },
   "config": {
