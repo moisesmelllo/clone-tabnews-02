@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import retry from "async-retry";
 import database from "infra/database";
 import runMigrations from "models/migrator";
