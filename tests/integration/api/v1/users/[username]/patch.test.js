@@ -105,7 +105,7 @@ describe("PATCH /api/v1/users/[username]", () => {
     });
 
     test("With unique username", async () => {
-      const user1 = await orchestrator.createUser({
+      await orchestrator.createUser({
         username: "uniqueusername",
       });
 
