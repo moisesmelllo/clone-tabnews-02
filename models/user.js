@@ -1,6 +1,7 @@
 import database from "infra/database.js";
 import password from "models/password.js";
 import { NotFoundError, ValidationError } from "infra/errors";
+import bcrypt from "bcryptjs";
 
 async function create(userInputValues) {
   await hashPassword(userInputValues);
@@ -117,6 +118,30 @@ async function findOneByUsername(username) {
   return response.rows[0];
 }
 
+async function findOneByEmail(email) {
+  const result = await database.query({
+    text: `
+      SELECT
+        *
+      FROM
+        users
+      WHERE
+        LOWER(email) = LOWER($1)
+      LIMIT
+        1
+    `,
+    values: [email],
+  });
+  if (result.rowCount === 0) {
+    throw new NotFoundError({
+      message: "O email informado não foi encontrado no sistema",
+      action: "Verifique se o email está digitado corretamente",
+    });
+  }
+
+  return result.rows[0];
+}
+
 async function hashPassword(textPassword) {
   await password.hash(textPassword);
 }
@@ -163,10 +188,28 @@ async function validateUniqueEmail(email) {
   }
 }
 
+async function validePassword(userInputValues, DBPassword) {
+  await hashPassword(userInputValues);
+
+  const isPasswordValid = await bcrypt.compare(
+    userInputValues.password,
+    DBPassword,
+  );
+
+  if (!isPasswordValid) {
+    throw new ValidationError({
+      message: "userInputValues",
+      action: "Verifique a senha digitada e tente novamente",
+    });
+  }
+}
+
 const user = {
   create,
-  findOneByUsername,
   update,
+  findOneByUsername,
+  findOneByEmail,
+  validePassword,
 };
 
 export default user;
