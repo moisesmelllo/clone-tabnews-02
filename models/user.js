@@ -142,6 +142,31 @@ async function findOneByEmail(email) {
   return result.rows[0];
 }
 
+async function findOneById(id) {
+  const result = await database.query({
+    text: `
+      SELECT
+        *
+      FROM
+        users
+      WHERE
+        id = $1
+      LIMIT 
+        1
+    ;`,
+    values: [id],
+  });
+
+  if (result.rowCount === 0) {
+    throw new NotFoundError({
+      message: "O usuario informado não foi encontrado no sistema",
+      action: "Verifique se o id está digitado corretamente",
+    });
+  }
+
+  return result.rows[0];
+}
+
 async function hashPassword(textPassword) {
   await password.hash(textPassword);
 }
@@ -209,6 +234,7 @@ const user = {
   update,
   findOneByUsername,
   findOneByEmail,
+  findOneById,
   validePassword,
 };
 
