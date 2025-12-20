@@ -8,12 +8,10 @@ async function create(userInputValues) {
   await validateUniqueUsername(userInputValues.username);
   await validateUniqueEmail(userInputValues.email);
 
+  injectDefaultFeaturesInObject(userInputValues);
+
   try {
-    const newUser = await runInsertQuery(
-      userInputValues.username,
-      userInputValues.email,
-      userInputValues.password,
-    );
+    const newUser = await runInsertQuery(userInputValues);
     return newUser;
   } catch (error) {
     throw error;
@@ -48,22 +46,31 @@ async function update(username, userInputValues) {
   }
 }
 
-async function runInsertQuery(username, email, textPassword) {
+async function runInsertQuery(userInputValues) {
   const result = await database.query({
     text: `
         INSERT INTO 
-          users (username, email, password) 
+          users (username, email, password, features) 
         VALUES 
-          (LOWER($1), LOWER($2), $3) 
+          (LOWER($1), LOWER($2), $3, $4) 
         RETURNING 
           *
         ;`,
-    values: [username, email, textPassword],
+    values: [
+      userInputValues.username,
+      userInputValues.email,
+      userInputValues.password,
+      userInputValues.features,
+    ],
   });
 
   const user = result.rows[0];
 
   return user;
+}
+
+function injectDefaultFeaturesInObject(userInputValues) {
+  userInputValues.features = ["read:activation_token"];
 }
 
 async function runUpdateQuery(updatedUser) {
