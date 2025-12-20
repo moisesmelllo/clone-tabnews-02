@@ -16,6 +16,10 @@ function onNoMatchHandler(request, response) {
 }
 
 function onErrorHandler(error, request, response) {
+  if (error instanceof UnauthorizedError) {
+    clearSessionCookie(response);
+  }
+
   if (
     error instanceof ValidationError ||
     error instanceof NotFoundError ||
@@ -43,10 +47,22 @@ function setSessionCookie(sessionToken, response) {
   response.setHeader("Set-Cookie", setCookie);
 }
 
+function clearSessionCookie(response) {
+  const setCookie = cookie.serialize("session_id", "invalid", {
+    path: "/",
+    maxAge: -1,
+    secure: process.env.NODE_ENV === "production",
+    httpOnly: true,
+  });
+
+  response.setHeader("Set-Cookie", setCookie);
+}
+
 const controller = {
   onErrorHandler,
   onNoMatchHandler,
   setSessionCookie,
+  clearSessionCookie,
 };
 
 export default controller;
