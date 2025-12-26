@@ -79,8 +79,12 @@ async function createSession(userId) {
 async function getLastEmail() {
   const emailListResponse = await fetch(`${emailhttpUrl}/messages`);
   const emailListBody = await emailListResponse.json();
-
   const lastEmailItem = emailListBody.pop();
+
+  if (!lastEmailItem) {
+    return null;
+  }
+
   const emailTextResponse = await fetch(
     `${emailhttpUrl}/messages/${lastEmailItem.id}.plain`,
   );
