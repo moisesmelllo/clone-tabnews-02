@@ -101,7 +101,7 @@ function extractUUID(text) {
 }
 
 async function activateUser(inactiveUser) {
-  await activation.activateUserById(inactiveUser.id);
+  return await activation.activateUserById(inactiveUser.id);
 }
 
 const orchestrator = {
