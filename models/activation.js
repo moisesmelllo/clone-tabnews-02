@@ -2,8 +2,9 @@ import email from "infra/email.js";
 import dedent from "dedent";
 import database from "infra/database";
 import webserver from "infra/webserver";
-import { NotFoundError } from "infra/errors";
+import { ForbiddenError, NotFoundError } from "infra/errors";
 import user from "models/user";
+import authorization from "./authorization";
 
 const EXPIRATION_IN_MILLISECONDS = 60 * 15 * 1000; // 15 minutes
 
@@ -106,10 +107,20 @@ async function markTokenAsUsed(tokenId) {
 }
 
 async function activateUserById(userId) {
+  const userToActivate = await user.findOneById(userId);
+
+  if (!authorization.can(userToActivate, "read:activation_token")) {
+    throw new ForbiddenError({
+      message: "Você não pode mais utilizar tokens de ativação",
+      action: "Entre em contato com o suporte",
+    });
+  }
+
   const activatedUser = await user.setFeatures(userId, [
     "create:session",
     "read:session",
   ]);
+
   return activatedUser;
 }
 
@@ -119,6 +130,7 @@ const activation = {
   findOneValidById,
   markTokenAsUsed,
   activateUserById,
+  EXPIRATION_IN_MILLISECONDS,
 };
 
 export default activation;
