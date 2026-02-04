@@ -1,6 +1,5 @@
 import { version as uuidVersion } from "uuid";
 import orchestrator from "tests/orchestrator";
-import password from "models/password";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -34,7 +33,7 @@ describe("PATCH /api/v1/users/[username]", () => {
 
       expect(response2Body).toEqual({
         action: 'Verifique se o seu usuário possui a feature "update:user"',
-        message: "Você não possui permissão para executar est ação",
+        message: "Você não possui permissão para executar esta ação",
         name: "ForbiddenError",
         status_code: 403,
       });
@@ -214,9 +213,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       expect(response2Body).toEqual({
         id: response2Body.id,
         username: "updatedusername",
-        email: response2Body.email,
         features: ["create:session", "read:session", "update:user"],
-        password: response2Body.password,
         created_at: response2Body.created_at,
         updated_at: response2Body.updated_at,
       });
@@ -259,9 +256,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: createdUser.username,
-        email: "uniqueemail2@curso.dev",
         features: ["create:session", "read:session", "update:user"],
-        password: responseBody.password,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
@@ -300,9 +295,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: createdUser.username,
-        email: createdUser.email,
         features: ["create:session", "read:session", "update:user"],
-        password: responseBody.password,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
@@ -310,12 +303,6 @@ describe("PATCH /api/v1/users/[username]", () => {
       expect(Date.parse(responseBody.created_at)).not.toBe(NaN);
       expect(Date.parse(responseBody.updated_at)).not.toBe(NaN);
 
-      const updatedPasswordIsHash = await password.compare(
-        "updatedPassword",
-        responseBody.password,
-      );
-
-      expect(updatedPasswordIsHash).toBe(true);
       expect(responseBody.password).not.toBe(createdUser.password);
     });
   });
@@ -357,9 +344,7 @@ describe("PATCH /api/v1/users/[username]", () => {
       expect(responseBody).toEqual({
         id: defaultUser.id,
         username: "alteredbyprivelegeduser",
-        email: defaultUser.email,
         features: defaultUser.features,
-        password: defaultUser.password,
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });

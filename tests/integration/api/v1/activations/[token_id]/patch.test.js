@@ -199,7 +199,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       expect(responseBody).toEqual({
         action:
           'Verifique se o seu usuário possui a feature "read:activation_token"',
-        message: "Você não possui permissão para executar est ação",
+        message: "Você não possui permissão para executar esta ação",
         name: "ForbiddenError",
         status_code: 403,
       });
