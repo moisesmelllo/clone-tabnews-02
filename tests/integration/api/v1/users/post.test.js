@@ -1,6 +1,5 @@
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
-import password from "models/password";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -31,8 +30,7 @@ describe("POST /api/v1/users", () => {
       expect(responseBody).toEqual({
         id: responseBody.id,
         username: "filipedeschamps",
-        email: "felipedeschamps@curso.dev",
-        password: responseBody.password,
+        features: ["read:activation_token"],
         created_at: responseBody.created_at,
         updated_at: responseBody.updated_at,
       });
@@ -40,19 +38,6 @@ describe("POST /api/v1/users", () => {
       expect(uuidVersion(responseBody.id)).toBe(4);
       expect(Date.parse(responseBody.created_at)).not.toBeNaN();
       expect(Date.parse(responseBody.updated_at)).not.toBeNaN();
-
-      const correctPasswordMatch = await password.compare(
-        plainTextPassword,
-        responseBody.password,
-      );
-
-      const incorrectPasswordMatch = await password.compare(
-        "senhaErrada",
-        responseBody.password,
-      );
-
-      expect(correctPasswordMatch).toBe(true);
-      expect(incorrectPasswordMatch).toBe(false);
     });
 
     test("With duplicated email", async () => {
@@ -130,6 +115,38 @@ describe("POST /api/v1/users", () => {
         message: "O username informado ja esta sendo utilizado",
         action: "Utilize outro username para realizar a operação",
         status_code: 400,
+      });
+    });
+  });
+
+  describe("Default user", () => {
+    test("User1 trying to create user2 without 'createUSer' feature", async () => {
+      const user1 = await orchestrator.createUser();
+      await orchestrator.activateUser(user1);
+      const user1SessionObject = await orchestrator.createSession(user1.id);
+
+      const user2Response = await fetch("http://localhost:3000/api/v1/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: `session_id=${user1SessionObject.token}`,
+        },
+        body: JSON.stringify({
+          username: "usuariologado",
+          email: "usuariologado@curso.dev",
+          password: "senha123",
+        }),
+      });
+
+      expect(user2Response.status).toBe(403);
+
+      const user2ResponseBody = await user2Response.json();
+
+      expect(user2ResponseBody).toEqual({
+        name: "ForbiddenError",
+        action: 'Verifique se o seu usuário possui a feature "create:user"',
+        message: "Você não possui permissão para executar esta ação",
+        status_code: 403,
       });
     });
   });

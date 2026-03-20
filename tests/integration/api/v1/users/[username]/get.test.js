@@ -1,4 +1,3 @@
-import password from "models/password";
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
 
@@ -29,21 +28,14 @@ describe("GET /api/v1/users/[username]", () => {
       expect(response2Body).toEqual({
         id: response2Body.id,
         username: "mesmocase",
-        email: "mesmo.case@curso.dev",
-        password: response2Body.password,
+        features: ["read:activation_token"],
         created_at: response2Body.created_at,
         updated_at: response2Body.updated_at,
       });
 
-      const isHash = await password.compare(
-        plainTextPassword,
-        response2Body.password,
-      );
-
       expect(uuidVersion(response2Body.id)).toBe(4);
       expect(Date.parse(response2Body.created_at)).not.toBeNaN();
       expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
-      expect(isHash).toBe(true);
     });
 
     test("With case mismatch", async () => {
@@ -64,21 +56,14 @@ describe("GET /api/v1/users/[username]", () => {
       expect(response2Body).toEqual({
         id: response2Body.id,
         username: "casemismatch",
-        email: "casemismatch@curso.dev",
-        password: response2Body.password,
+        features: ["read:activation_token"],
         created_at: response2Body.created_at,
         updated_at: response2Body.updated_at,
       });
 
-      const isHash = await password.compare(
-        plainTextPassword,
-        response2Body.password,
-      );
-
       expect(uuidVersion(response2Body.id)).toBe(4);
       expect(Date.parse(response2Body.created_at)).not.toBeNaN();
       expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
-      expect(isHash).toBe(true);
     });
 
     test("With noexistent user", async () => {

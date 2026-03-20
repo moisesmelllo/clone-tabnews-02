@@ -8,12 +8,10 @@ async function create(userInputValues) {
   await validateUniqueUsername(userInputValues.username);
   await validateUniqueEmail(userInputValues.email);
 
+  injectDefaultFeaturesInObject(userInputValues);
+
   try {
-    const newUser = await runInsertQuery(
-      userInputValues.username,
-      userInputValues.email,
-      userInputValues.password,
-    );
+    const newUser = await runInsertQuery(userInputValues);
     return newUser;
   } catch (error) {
     throw error;
@@ -48,22 +46,31 @@ async function update(username, userInputValues) {
   }
 }
 
-async function runInsertQuery(username, email, textPassword) {
+async function runInsertQuery(userInputValues) {
   const result = await database.query({
     text: `
         INSERT INTO 
-          users (username, email, password) 
+          users (username, email, password, features) 
         VALUES 
-          (LOWER($1), LOWER($2), $3) 
+          (LOWER($1), LOWER($2), $3, $4) 
         RETURNING 
           *
         ;`,
-    values: [username, email, textPassword],
+    values: [
+      userInputValues.username,
+      userInputValues.email,
+      userInputValues.password,
+      userInputValues.features,
+    ],
   });
 
   const user = result.rows[0];
 
   return user;
+}
+
+function injectDefaultFeaturesInObject(userInputValues) {
+  userInputValues.features = ["read:activation_token"];
 }
 
 async function runUpdateQuery(updatedUser) {
@@ -229,6 +236,54 @@ async function validePassword(userInputValues, DBPassword) {
   }
 }
 
+async function setFeatures(userId, features) {
+  const updatedUser = await runUpdateQuery(userId, features);
+  return updatedUser;
+
+  async function runUpdateQuery(userId, features) {
+    const results = await database.query({
+      text: `
+        UPDATE
+          users
+        SET
+          features = $2,
+          updated_at = timezone('utc', now())
+        WHERE
+          id = $1
+        RETURNING
+          *
+      ;`,
+      values: [userId, features],
+    });
+
+    return results.rows[0];
+  }
+}
+
+async function addFeatures(userId, features) {
+  const updatedUser = await runUpdateQuery(userId, features);
+  return updatedUser;
+
+  async function runUpdateQuery(userId, features) {
+    const results = await database.query({
+      text: `
+        UPDATE
+          users
+        SET
+          features = array_cat(features, $2),
+          updated_at = timezone('utc', now())
+        WHERE
+          id = $1
+        RETURNING
+          *
+      ;`,
+      values: [userId, features],
+    });
+
+    return results.rows[0];
+  }
+}
+
 const user = {
   create,
   update,
@@ -236,6 +291,8 @@ const user = {
   findOneByEmail,
   findOneById,
   validePassword,
+  setFeatures,
+  addFeatures,
 };
 
 export default user;
