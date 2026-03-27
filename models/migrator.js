@@ -1,5 +1,4 @@
 import database from "infra/database";
-import migrationRunner from "node-pg-migrate";
 import { join } from "node:path";
 import { ServiceError } from "infra/errors";
 
@@ -15,7 +14,20 @@ async function runMigrations({ dryRun }) {
   try {
     dbClient = await database.getNewClient();
 
-    const PendingMigrations = await migrationRunner({
+    // v8 fix: Importamos o módulo e buscamos a função 'runner' explicitamente
+    const mod = await import("node-pg-migrate");
+
+    // Na v8, a função principal costuma ser o named export 'runner'
+    const runner = mod.runner || mod.default;
+
+    if (typeof runner !== "function") {
+      console.error("Conteúdo do módulo para debug:", mod);
+      throw new Error(
+        "Não foi possível localizar a função de migração. Verifique a versão do node-pg-migrate.",
+      );
+    }
+
+    const PendingMigrations = await runner({
       ...defaultMigrationOptions,
       dbClient,
       dryRun,

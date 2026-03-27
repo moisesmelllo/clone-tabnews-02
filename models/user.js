@@ -10,12 +10,7 @@ async function create(userInputValues) {
 
   injectDefaultFeaturesInObject(userInputValues);
 
-  try {
-    const newUser = await runInsertQuery(userInputValues);
-    return newUser;
-  } catch (error) {
-    throw error;
-  }
+  return await runInsertQuery(userInputValues);
 }
 
 async function update(username, userInputValues) {
@@ -38,12 +33,7 @@ async function update(username, userInputValues) {
     ...userInputValues,
   };
 
-  try {
-    const updatedUser = await runUpdateQuery(updatedUserObject);
-    return updatedUser;
-  } catch (error) {
-    throw error;
-  }
+  return await runUpdateQuery(updatedUserObject);
 }
 
 async function runInsertQuery(userInputValues) {

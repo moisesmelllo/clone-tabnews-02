@@ -2,6 +2,7 @@ import activation from "models/activation";
 import user from "models/user";
 import orchestrator from "tests/orchestrator";
 import { version as uuidVersion } from "uuid";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -9,11 +10,11 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("PATCH /api/v1/activations/[token_id]", () => {
-  describe("Anonymous user", () => {
-    test("With nonexistent token", async () => {
+describe(`PATCH /api/v1/activations/[token_id]`, () => {
+  describe(`Anonymous user`, () => {
+    test(`With nonexistent token`, async () => {
       const response = await fetch(
-        "http://localhost:3000/api/v1/activations/d972454e-689e-47c0-bd0c-4814e8e5cc35",
+        `${webserver.origin}/api/v1/activations/d972454e-689e-47c0-bd0c-4814e8e5cc35`,
         {
           method: "PATCH",
         },
@@ -32,7 +33,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       });
     });
 
-    test("With expired token", async () => {
+    test(`With expired token`, async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - activation.EXPIRATION_IN_MILLISECONDS),
       });
@@ -43,7 +44,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       jest.useRealTimers();
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/activations/${expiredActivationToken.id}`,
+        `${webserver.origin}/api/v1/activations/${expiredActivationToken.id}`,
         {
           method: "PATCH",
         },
@@ -54,7 +55,6 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       const responseBody = await response.json();
 
       expect(responseBody).toEqual({
-        message: "O token de ativação",
         action: "Faça um novo cadastro.",
         message:
           "O token de ativação utilizado não foi encontrado no sistema ou expirou",
@@ -63,12 +63,12 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       });
     });
 
-    test("With already used token", async () => {
+    test(`With already used token`, async () => {
       const createdUser = await orchestrator.createUser();
       const activationToken = await activation.create(createdUser.id);
 
       const response1 = await fetch(
-        `http://localhost:3000/api/v1/activations/${activationToken.id}`,
+        `${webserver.origin}/api/v1/activations/${activationToken.id}`,
         {
           method: "PATCH",
         },
@@ -77,7 +77,7 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       expect(response1.status).toBe(200);
 
       const response2 = await fetch(
-        `http://localhost:3000/api/v1/activations/${activationToken.id}`,
+        `${webserver.origin}/api/v1/activations/${activationToken.id}`,
         {
           method: "PATCH",
         },
@@ -88,7 +88,6 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       const response2Body = await response2.json();
 
       expect(response2Body).toEqual({
-        message: "O token de ativação",
         action: "Faça um novo cadastro.",
         message:
           "O token de ativação utilizado não foi encontrado no sistema ou expirou",
@@ -97,12 +96,12 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       });
     });
 
-    test("With valid token", async () => {
+    test(`With valid token`, async () => {
       const createdUser = await orchestrator.createUser();
       const activationToken = await activation.create(createdUser.id);
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/activations/${activationToken.id}`,
+        `${webserver.origin}/api/v1/activations/${activationToken.id}`,
         {
           method: "PATCH",
         },
@@ -148,13 +147,13 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
       ]);
     });
 
-    test("With valid token but already activated user", async () => {
+    test(`With valid token but already activated user`, async () => {
       const createdUser = await orchestrator.createUser();
       await orchestrator.activateUser(createdUser);
       const activationToken = await activation.create(createdUser.id);
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/activations/${activationToken.id}`,
+        `${webserver.origin}/api/v1/activations/${activationToken.id}`,
         {
           method: "PATCH",
         },
@@ -173,17 +172,17 @@ describe("PATCH /api/v1/activations/[token_id]", () => {
     });
   });
 
-  describe("Default user", () => {
-    test("With valid token, but already logged in user", async () => {
+  describe(`Default user`, () => {
+    test(`With valid token, but already logged in user`, async () => {
       const user1 = await orchestrator.createUser();
       await orchestrator.activateUser(user1);
-      const user1SessionObject = await orchestrator.createSession(user1.id);
+      const user1SessionObject = await orchestrator.createSession(user1);
 
       const user2 = await orchestrator.createUser();
       const user2ActivatonToken = await activation.create(user2.id);
 
       const response = await fetch(
-        `http://localhost:3000/api/v1/activations/${user2ActivatonToken.id}`,
+        `${webserver.origin}/api/v1/activations/${user2ActivatonToken.id}`,
         {
           method: "PATCH",
           headers: {

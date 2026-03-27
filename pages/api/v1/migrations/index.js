@@ -3,16 +3,14 @@ import runMigrations from "models/migrator";
 import controller from "infra/controller";
 import authorization from "models/authorization";
 
-const router = createRouter();
-
-router.use(controller.injectAnonymousOrUser);
-router.get(controller.canRequest("read:migration"), getHandler);
-router.post(controller.canRequest("create:migration"), postHandler);
-
-export default router.handler({
-  onNoMatch: controller.onNoMatchHandler,
-  onError: controller.onErrorHandler,
-});
+export default createRouter()
+  .use(controller.injectAnonymousOrUser)
+  .get(controller.canRequest("read:migration"), getHandler)
+  .post(controller.canRequest("create:migration"), postHandler)
+  .handler({
+    onNoMatch: controller.onNoMatchHandler,
+    onError: controller.onErrorHandler,
+  });
 
 async function getHandler(request, response) {
   const userTryingToGet = request.context.user;

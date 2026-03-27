@@ -1,6 +1,7 @@
 import orchestrator from "tests/orchestrator";
 import session from "models/session";
 import setCookieParser from "set-cookie-parser";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -8,13 +9,13 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("DELETE /api/v1/sessions", () => {
-  describe("Default USer", () => {
-    test("With nonexistent session", async () => {
+describe(`DELETE /api/v1/sessions`, () => {
+  describe(`Default USer`, () => {
+    test(`With nonexistent session`, async () => {
       const nonexistentToken =
         "bbf0fc2a9a0188a32e06cc03965ac40cc863a9b7dbe8117286533c066022d8a6a044d67a374fccde61b3a9aaa9cc2b26";
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
           cookie: `session_id=${nonexistentToken}`,
@@ -33,18 +34,18 @@ describe("DELETE /api/v1/sessions", () => {
       });
     });
 
-    test("With expired session", async () => {
+    test(`With expired session`, async () => {
       jest.useFakeTimers({
         now: new Date(Date.now() - session.EXPIRATION_IN_MILLISECONDS),
       });
 
       const createdUser = await orchestrator.createUser();
 
-      const sessionObject = await orchestrator.createSession(createdUser.id);
+      const sessionObject = await orchestrator.createSession(createdUser);
 
       jest.useRealTimers();
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
           cookie: `session_id=${sessionObject.token}`,
@@ -63,14 +64,14 @@ describe("DELETE /api/v1/sessions", () => {
       });
     });
 
-    test("With valid session", async () => {
+    test(`With valid session`, async () => {
       const createdUser = await orchestrator.createUser({
         username: "validSession",
       });
 
-      const sessionObject = await orchestrator.createSession(createdUser.id);
+      const sessionObject = await orchestrator.createSession(createdUser);
 
-      const response = await fetch("http://localhost:3000/api/v1/sessions", {
+      const response = await fetch(`${webserver.origin}/api/v1/sessions`, {
         method: "DELETE",
         headers: {
           cookie: `session_id=${sessionObject.token}`,
@@ -110,7 +111,7 @@ describe("DELETE /api/v1/sessions", () => {
       });
 
       const doubleCheckResponse = await fetch(
-        "http://localhost:3000/api/v1/user",
+        `${webserver.origin}/api/v1/user`,
         {
           headers: {
             Cookie: `session_id=${sessionObject.token}`,

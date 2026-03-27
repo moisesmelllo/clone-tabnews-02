@@ -3,15 +3,13 @@ import activation from "models/activation";
 import authorization from "models/authorization";
 import { createRouter } from "next-connect";
 
-const router = createRouter();
-
-router.use(controller.injectAnonymousOrUser);
-router.patch(controller.canRequest("read:activation_token"), patchHandler);
-
-export default router.handler({
-  onNoMatch: controller.onNoMatchHandler,
-  onError: controller.onErrorHandler,
-});
+export default createRouter()
+  .use(controller.injectAnonymousOrUser)
+  .patch(controller.canRequest("read:activation_token"), patchHandler)
+  .handler({
+    onNoMatch: controller.onNoMatchHandler,
+    onError: controller.onErrorHandler,
+  });
 
 async function patchHandler(request, response) {
   const userTryingToPatch = request.context.user;

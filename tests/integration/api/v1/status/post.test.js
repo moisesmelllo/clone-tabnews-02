@@ -1,13 +1,14 @@
 import orchestrator from "tests/orchestrator";
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
 });
 
-describe("POST /api/v1/status", () => {
-  describe("Annonymous user", () => {
-    test("should return 405", async () => {
-      const response = await fetch("http://localhost:3000/api/v1/status", {
+describe(`POST /api/v1/status`, () => {
+  describe(`Annonymous user`, () => {
+    test(`should return 405`, async () => {
+      const response = await fetch(`${webserver.origin}/api/v1/status`, {
         method: "POST",
       });
       expect(response.status).toBe(405);

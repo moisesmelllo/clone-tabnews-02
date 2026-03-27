@@ -10,25 +10,22 @@ beforeAll(async () => {
   await orchestrator.deleteAllEmails();
 });
 
-describe("Use case: Registration Flow (all successful)", () => {
+describe(`Use case: Registration Flow (all successful)`, () => {
   let createUserResponseBody;
   let activationTokenId;
   let createSessionsResponseBody;
-  test("Create user account", async () => {
-    const createUserResponse = await fetch(
-      "http://localhost:3000/api/v1/users",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: "RegistrationFlow",
-          email: "registration.flow@curso.dev",
-          password: "RegistrationFlowPassword",
-        }),
+  test(`Create user account`, async () => {
+    const createUserResponse = await fetch(`${webserver.origin}/api/v1/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({
+        username: "RegistrationFlow",
+        email: "registration.flow@curso.dev",
+        password: "RegistrationFlowPassword",
+      }),
+    });
 
     expect(createUserResponse.status).toBe(201);
 
@@ -42,7 +39,7 @@ describe("Use case: Registration Flow (all successful)", () => {
       updated_at: createUserResponseBody.updated_at,
     });
   });
-  test("Receive activation email", async () => {
+  test(`Receive activation email`, async () => {
     const lastEmail = await orchestrator.getLastEmail();
 
     expect(lastEmail.sender).toBe("<contato@curso.live>");
@@ -63,9 +60,9 @@ describe("Use case: Registration Flow (all successful)", () => {
     expect(activationTokenObject.used_at).toBe(null);
   });
 
-  test("Activate account", async () => {
+  test(`Activate account`, async () => {
     const activationResponse = await fetch(
-      `http://localhost:3000/api/v1/activations/${activationTokenId}`,
+      `${webserver.origin}/api/v1/activations/${activationTokenId}`,
       {
         method: "PATCH",
       },
@@ -88,9 +85,9 @@ describe("Use case: Registration Flow (all successful)", () => {
     ]);
   });
 
-  test("Login", async () => {
+  test(`Login`, async () => {
     const createSessionsReponse = await fetch(
-      "http://localhost:3000/api/v1/sessions",
+      `${webserver.origin}/api/v1/sessions`,
       {
         method: "POST",
         headers: {
@@ -110,8 +107,8 @@ describe("Use case: Registration Flow (all successful)", () => {
     expect(createSessionsResponseBody.user_id).toBe(createUserResponseBody.id);
   });
 
-  test("Get user information", async () => {
-    const userResponse = await fetch("http://localhost:3000/api/v1/user", {
+  test(`Get user information`, async () => {
+    const userResponse = await fetch(`${webserver.origin}/api/v1/user`, {
       headers: {
         cookie: `session_id=${createSessionsResponseBody?.token}`,
       },

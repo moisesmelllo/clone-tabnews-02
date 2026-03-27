@@ -4,15 +4,13 @@ import user from "models/user.js";
 import activation from "models/activation";
 import authorization from "models/authorization";
 
-const router = createRouter();
-
-router.use(controller.injectAnonymousOrUser);
-router.post(controller.canRequest("create:user"), posthandler);
-
-export default router.handler({
-  onNoMatch: controller.onNoMatchHandler,
-  onError: controller.onErrorHandler,
-});
+export default createRouter()
+  .use(controller.injectAnonymousOrUser)
+  .post(controller.canRequest("create:user"), posthandler)
+  .handler({
+    onNoMatch: controller.onNoMatchHandler,
+    onError: controller.onErrorHandler,
+  });
 
 async function posthandler(request, response) {
   const userTryingToPost = request.context.user;

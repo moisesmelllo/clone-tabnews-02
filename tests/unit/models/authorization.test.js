@@ -1,15 +1,15 @@
 import { InternalServerError } from "infra/errors";
 import authorization from "models/authorization";
 
-describe("models/authorization.js", () => {
-  describe(".can()", () => {
-    test("without `user`", () => {
+describe(`models/authorization.js`, () => {
+  describe(`.can()`, () => {
+    test(`without 'user'`, () => {
       expect(() => {
         authorization.can();
       }).toThrow(InternalServerError);
     });
 
-    test("without `user.features`", () => {
+    test(`without 'user.features'`, () => {
       const createdUser = {
         username: "UserWithoutFeatures",
       };
@@ -18,7 +18,7 @@ describe("models/authorization.js", () => {
       }).toThrow(InternalServerError);
     });
 
-    test("with unknown `feature`", () => {
+    test(`with unknown 'feature'`, () => {
       const createdUser = {
         features: [],
       };
@@ -27,7 +27,7 @@ describe("models/authorization.js", () => {
       }).toThrow(InternalServerError);
     });
 
-    test("with valid user and known `feature`", () => {
+    test(`with valid user and known 'feature'`, () => {
       const createdUser = {
         features: ["create:user"],
       };
@@ -35,14 +35,14 @@ describe("models/authorization.js", () => {
     });
   });
 
-  describe(".filterOutput()", () => {
-    test("without `user`", () => {
+  describe(`.filterOutput()`, () => {
+    test(`without 'user'`, () => {
       expect(() => {
-        authorization.can();
+        authorization.filterOutput(); // <-- Corrigido aqui
       }).toThrow(InternalServerError);
     });
 
-    test("without `user.features`", () => {
+    test(`without 'user.features'`, () => {
       const createdUser = {
         username: "UserWithoutFeatures",
       };
@@ -51,7 +51,7 @@ describe("models/authorization.js", () => {
       }).toThrow(InternalServerError);
     });
 
-    test("with unknown `feature`", () => {
+    test(`with unknown 'feature'`, () => {
       const createdUser = {
         features: [],
       };
@@ -60,7 +60,7 @@ describe("models/authorization.js", () => {
       }).toThrow(InternalServerError);
     });
 
-    test("with valid user and known `feature` and `resource`", () => {
+    test(`with valid user and known 'feature' and 'resource'`, () => {
       const createdUser = {
         features: ["read:user"],
       };
@@ -69,8 +69,8 @@ describe("models/authorization.js", () => {
         id: 1,
         username: "resource",
         features: ["read:user"],
-        created_at: "2026-0101T00:00:00.00Z",
-        updated_at: "2026-0101T00:00:00.00Z",
+        created_at: "2026-01-01T00:00:00.000Z", // <-- Formato ISO corrigido
+        updated_at: "2026-01-01T00:00:00.000Z", // <-- Formato ISO corrigido
         email: "resource@resource.com",
         password: "resource",
       };
@@ -85,12 +85,12 @@ describe("models/authorization.js", () => {
         id: 1,
         username: "resource",
         features: ["read:user"],
-        created_at: "2026-0101T00:00:00.00Z",
-        updated_at: "2026-0101T00:00:00.00Z",
+        created_at: "2026-01-01T00:00:00.000Z",
+        updated_at: "2026-01-01T00:00:00.000Z",
       });
     });
 
-    test("with valid user and known `feature` but no `resource`", () => {
+    test(`with valid user and known 'feature' but no 'resource'`, () => {
       const createdUser = {
         features: ["read:user"],
       };
