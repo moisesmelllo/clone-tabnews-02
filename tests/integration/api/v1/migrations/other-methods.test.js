@@ -6,7 +6,7 @@ async function fetchMigrations(fetchMethod) {
   return response;
 }
 
-test("not POST to /api/v1/migrations should return 405", async () => {
+test(`not POST to /api/v1/migrations should return 405`, async () => {
   const response = await fetchMigrations("DELETE");
   const response1 = await fetchMigrations("PUT");
   const response2 = await fetchMigrations("PATCH");

@@ -7,10 +7,10 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("GET /api/v1/users/[username]", () => {
+describe(`GET /api/v1/users/[username]`, () => {
   const plainTextPassword = "senhas123";
-  describe("Anonymous user", () => {
-    test("With exact case match", async () => {
+  describe(`Anonymous user`, () => {
+    test(`With exact case match`, async () => {
       await orchestrator.createUser({
         username: "MesmoCase",
         email: "mesmo.case@curso.dev",
@@ -38,7 +38,7 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
     });
 
-    test("With case mismatch", async () => {
+    test(`With case mismatch`, async () => {
       await orchestrator.createUser({
         username: "CaseMismatch",
         email: "CaseMismatch@curso.dev",
@@ -66,7 +66,7 @@ describe("GET /api/v1/users/[username]", () => {
       expect(Date.parse(response2Body.updated_at)).not.toBeNaN();
     });
 
-    test("With noexistent user", async () => {
+    test(`With noexistent user`, async () => {
       const response2 = await fetch(
         "http://localhost:3000/api/v1/users/noExistentUser",
       );

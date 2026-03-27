@@ -6,9 +6,9 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("GET /api/v1/migrations", () => {
-  describe("Anonymous user", () => {
-    test("Retrieving pending migrations", async () => {
+describe(`GET /api/v1/migrations`, () => {
+  describe(`Anonymous user`, () => {
+    test(`Retrieving pending migrations`, async () => {
       const response = await fetch("http://localhost:3000/api/v1/migrations");
 
       expect(response.status).toBe(403);
@@ -24,8 +24,8 @@ describe("GET /api/v1/migrations", () => {
     });
   });
 
-  describe("Default user", () => {
-    test("Retrieving pending migrations", async () => {
+  describe(`Default user`, () => {
+    test(`Retrieving pending migrations`, async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
       const sessionObject = await orchestrator.createSession(activatedUser.id);
@@ -49,8 +49,8 @@ describe("GET /api/v1/migrations", () => {
     });
   });
 
-  describe("Privileged user", () => {
-    test("With `read:migration`", async () => {
+  describe(`Privileged user`, () => {
+    test(`With 'read:migration'`, async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
       await orchestrator.addFeaturesToUser(createdUser, ["read:migration"]);

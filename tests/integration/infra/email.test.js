@@ -6,8 +6,8 @@ beforeAll(async () => {
   await orchestrator.deleteAllEmails();
 });
 
-describe("infra/email.js", () => {
-  test("send()", async () => {
+describe(`infra/email.js`, () => {
+  test(`send()`, async () => {
     await email.send({
       from: "Curso.live <contato@curso.live>",
       to: "contato@curso.dev",

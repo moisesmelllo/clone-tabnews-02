@@ -6,9 +6,9 @@ beforeAll(async () => {
   await orchestrator.runPendingMigrations();
 });
 
-describe("POST /api/v1/migrations", () => {
-  describe("Anonymous user", () => {
-    test("Running migrations", async () => {
+describe(`POST /api/v1/migrations`, () => {
+  describe(`Anonymous user`, () => {
+    test(`Running migrations`, async () => {
       const response = await fetch("http://localhost:3000/api/v1/migrations", {
         method: "POST",
       });
@@ -27,8 +27,8 @@ describe("POST /api/v1/migrations", () => {
     });
   });
 
-  describe("Default user", () => {
-    test("Running migrations", async () => {
+  describe(`Default user`, () => {
+    test(`Running migrations`, async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
       const sessionObject = await orchestrator.createSession(activatedUser.id);
@@ -54,8 +54,8 @@ describe("POST /api/v1/migrations", () => {
     });
   });
 
-  describe("Privileged user", () => {
-    test("Running migrations", async () => {
+  describe(`Privileged user`, () => {
+    test(`Running migrations`, async () => {
       const createdUser = await orchestrator.createUser();
       const activatedUser = await orchestrator.activateUser(createdUser);
       await orchestrator.addFeaturesToUser(createdUser, ["create:migration"]);
