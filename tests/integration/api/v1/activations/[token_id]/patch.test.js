@@ -55,7 +55,6 @@ describe(`PATCH /api/v1/activations/[token_id]`, () => {
       const responseBody = await response.json();
 
       expect(responseBody).toEqual({
-        message: "O token de ativação",
         action: "Faça um novo cadastro.",
         message:
           "O token de ativação utilizado não foi encontrado no sistema ou expirou",
@@ -89,7 +88,6 @@ describe(`PATCH /api/v1/activations/[token_id]`, () => {
       const response2Body = await response2.json();
 
       expect(response2Body).toEqual({
-        message: "O token de ativação",
         action: "Faça um novo cadastro.",
         message:
           "O token de ativação utilizado não foi encontrado no sistema ou expirou",

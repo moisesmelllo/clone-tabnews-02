@@ -126,10 +126,14 @@ describe(`POST /api/v1/sessions`, () => {
       const createdAt = new Date(responseBody.created_at);
 
       const durationInMilliseconds = expiresAt - createdAt;
-      const tolerance = 5000; 
+      const tolerance = 5000;
 
-      expect(durationInMilliseconds).toBeGreaterThanOrEqual(session.EXPIRATION_IN_MILLISECONDS - tolerance);
-      expect(durationInMilliseconds).toBeLessThanOrEqual(session.EXPIRATION_IN_MILLISECONDS + tolerance);
+      expect(durationInMilliseconds).toBeGreaterThanOrEqual(
+        session.EXPIRATION_IN_MILLISECONDS - tolerance,
+      );
+      expect(durationInMilliseconds).toBeLessThanOrEqual(
+        session.EXPIRATION_IN_MILLISECONDS + tolerance,
+      );
 
       const parsedSetCookie = setCookieParser(response, {
         map: true,
@@ -141,7 +145,7 @@ describe(`POST /api/v1/sessions`, () => {
         maxAge: session.EXPIRATION_IN_MILLISECONDS / 1000,
         path: "/",
         httpOnly: true,
-        sameSite: "Lax"
+        sameSite: "Lax",
       });
     });
   });

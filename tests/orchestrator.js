@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import retry from "async-retry";
 import { faker } from "@faker-js/faker";
 

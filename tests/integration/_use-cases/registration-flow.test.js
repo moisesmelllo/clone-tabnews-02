@@ -2,7 +2,6 @@ import webserver from "infra/webserver";
 import activation from "models/activation";
 import user from "models/user";
 import orchestrator from "tests/orchestrator";
-import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
