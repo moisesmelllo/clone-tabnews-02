@@ -2,7 +2,7 @@ import orchestrator from "tests/orchestrator";
 import setCookieParser from "set-cookie-parser";
 import { version as uuidVersion } from "uuid";
 import session from "models/session";
-import webserver from "infra/webserver"
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();

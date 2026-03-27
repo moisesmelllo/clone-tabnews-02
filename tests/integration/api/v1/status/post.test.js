@@ -1,5 +1,5 @@
 import orchestrator from "tests/orchestrator";
-import webserver from "infra/webserver"
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();

@@ -5,15 +5,13 @@ import user from "models/user";
 import authorization from "models/authorization";
 import { ForbiddenError } from "infra/errors";
 
-const router = createRouter();
-
-router.use(controller.injectAnonymousOrUser);
-router.get(controller.canRequest("read:session"), getHandler);
-
-export default router.handler({
-  onError: controller.onErrorHandler,
-  onNoMatch: controller.onNoMatchHandler,
-});
+export default createRouter()
+  .use(controller.injectAnonymousOrUser)
+  .get(controller.canRequest("read:session"), getHandler)
+  .handler({
+    onError: controller.onErrorHandler,
+    onNoMatch: controller.onNoMatchHandler,
+  });
 
 async function getHandler(request, response) {
   const userTryingToGet = request.context.user;

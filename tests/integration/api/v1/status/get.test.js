@@ -1,5 +1,5 @@
 import orchestrator from "tests/orchestrator";
-import webserver from "infra/webserver"
+import webserver from "infra/webserver";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -36,7 +36,7 @@ describe(`GET /api/v1/status`, () => {
       const activatedUser = await orchestrator.activateUser(createdUser);
 
       const privilegedUserSession = await orchestrator.createSession(
-        activatedUser.id,
+        activatedUser,
       );
 
       const response = await fetch(`${webserver.origin}/api/v1/status`, {
@@ -73,7 +73,7 @@ describe(`GET /api/v1/status`, () => {
         await orchestrator.activateUser(privilegedUser);
 
       const privilegedUserSession = await orchestrator.createSession(
-        activatedPrivilegedUser.id,
+        activatedPrivilegedUser,
       );
 
       await orchestrator.addFeaturesToUser(privilegedUser, ["read:status:all"]);
