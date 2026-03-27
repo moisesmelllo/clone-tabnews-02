@@ -1,6 +1,7 @@
 import { version as uuidVersion } from "uuid";
 import orchestrator from "tests/orchestrator";
 import webserver from "infra/webserver"
+import user from "models/user";
 
 beforeAll(async () => {
   await orchestrator.waitForAllServices();
@@ -265,6 +266,10 @@ describe(`PATCH /api/v1/users/[username]`, () => {
       expect(Date.parse(responseBody.created_at)).not.toBe(NaN);
       expect(Date.parse(responseBody.updated_at)).not.toBe(NaN);
       expect(responseBody.updated_at > responseBody.created_at).toBe(true);
+
+      const userInDatabase = await user.findOneByUsername(createdUser.username)
+
+      expect(userInDatabase.email).toBe("uniqueemail2@curso.dev")
     });
 
     test(`With new password`, async () => {
