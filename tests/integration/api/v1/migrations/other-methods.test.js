@@ -1,5 +1,7 @@
+import webserver from "infra/webserver"
+
 async function fetchMigrations(fetchMethod) {
-  const response = await fetch("http://localhost:3000/api/v1/migrations", {
+  const response = await fetch(`${webserver.origin}/api/v1/migrations`, {
     method: fetchMethod,
   });
 
